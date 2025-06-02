@@ -19,24 +19,27 @@ userRoutes.post('/signup', async (c) => {
   const body = await c.req.json();
   const { success } = signupInput.safeParse(body);
   if(!success) {
-    c.status(401);
+    c.status(400);
     return c.json({
-      error: 'Invalid request body'
+      message: 'Please fill in all required fields correctly'
     })
   }
-  const existingUser = await prisma.user.findUnique({
-    where: {
-      email: body.email
-    }
-  });
-  if(existingUser) {
-    c.status(411);
-    return c.json({
-      message: "User already exists"
-    });
-  }
-  
+
   try {
+    // Check if user already exists
+    const existingUser = await prisma.user.findUnique({
+      where: {
+        email: body.email
+      }
+    });
+    
+    if(existingUser) {
+      c.status(409);
+      return c.json({
+        message: "An account with this email already exists"
+      });
+    }
+
     const user = await prisma.user.create({
       data: {
         email: body.email,
@@ -48,14 +51,16 @@ userRoutes.post('/signup', async (c) => {
     const token = await sign({
       id: user.id
     }, c.env.JWT_SECRET);
+    
     return c.json({
       JWT_token: token,
       name: user.name
     });
   } catch(e) {
-    c.status(403);
+    console.error('Signup error:', e);
+    c.status(500);
     return c.json({
-      error: "error while signing up"
+      message: "Unable to create account. Please try again later"
     });
   }
 })
@@ -68,38 +73,51 @@ userRoutes.post('/signin', async (c) => {
   const body = await c.req.json();
   const { success } = signinInput.safeParse(body);
   if(!success) {
-    c.status(401);
+    c.status(400);
     return c.json({
-      error: 'Invalid request body'
+      message: 'Please provide valid email and password'
     })
   }
 
   try {
-    const user = await prisma.user.findUnique({
+    // First check if email exists
+    const userByEmail = await prisma.user.findUnique({
       where: {
-        email: body.email,
-        password: body.password
+        email: body.email
       }
-    })
-    if(!user) {
+    });
+
+    if (!userByEmail) {
       c.status(401);
       return c.json({
-        message: "Invalid email or password"
+        message: "No account found with this email address"
       });
     }
 
+    // Then check if password matches
+    if (userByEmail.password !== body.password) {
+      c.status(401);
+      return c.json({
+        message: "Incorrect password. Please try again"
+      });
+    }
+
+    // If both email and password are correct
     const token = await sign({
-      id: user.id
+      id: userByEmail.id
     }, c.env.JWT_SECRET);
+    
     return c.json({
       JWT_token: token,
-      name: user.name
-    })
+      name: userByEmail.name
+    });
+    
   } catch (e) {
-    c.status(403);
+    console.error('Signin error:', e);
+    c.status(500);
     return c.json({
-      error: "error while signing in"
-    })
+      message: "Unable to sign in. Please try again later"
+    });
   }
 })
 

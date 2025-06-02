@@ -16,7 +16,7 @@ export const Blog = () => {
         
             <div className="h-screen flex flex-col justify-center">
                 <div className="flex justify-center">
-                    <Spinner />
+                    <Spinner size="md" color="blue" />
                 </div>
             </div>
         </div>
