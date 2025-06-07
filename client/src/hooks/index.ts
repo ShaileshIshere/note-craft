@@ -7,6 +7,7 @@ export interface Blog {
     "content": string;
     "title": string;
     "id": string;
+    imageUrl?: string;
     "author": {
         "name": string
     }
