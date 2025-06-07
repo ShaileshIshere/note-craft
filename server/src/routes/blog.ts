@@ -46,117 +46,138 @@ blogRoutes.use('/*', async (c, next) => {
 });
 
 blogRoutes.post('/', async (c) => {
-	const prisma = new PrismaClient({
-	  datasourceUrl: c.env.DATABASE_URL,
-	}).$extends(withAccelerate())
-	
-	const body = await c.req.json();
-	const { success } = createBlogInput.safeParse(body);
-	if(!success) {
-		c.status(400);
-		return c.json({
-			error: "Invalid request"
-		});
-	}
-	const userId = c.get("userId");
+    const prisma = new PrismaClient({
+      datasourceUrl: c.env.DATABASE_URL,
+    }).$extends(withAccelerate())
+    
+    const body = await c.req.json();
+    
+    const { success, error } = createBlogInput.safeParse(body);
+    if(!success) {
+        c.status(400);
+        return c.json({
+            error: "Invalid request",
+            details: error
+        });
+    }
+    
+    const userId = c.get("userId");
 
-	const blog = await prisma.post.create({
-		data: {
-			title: body.title,
-			content: body.content,
-			authorId: userId
-		}
-	})
-	return c.json({
-		id: blog.id
-	})
+    try {
+        const imageUrl = body.imageUrl || "https://picsum.photos/800/400?random=" + Date.now();
+
+        const blog = await prisma.post.create({
+            data: {
+                title: body.title,
+                content: body.content,
+                imageUrl: imageUrl,
+                authorId: userId
+            }
+        });
+        
+        return c.json({
+            id: blog.id,
+            imageUrl: imageUrl,
+            success: true
+        });
+    } catch (error) {
+        console.error('Database error:', error);
+        c.status(500);
+        return c.json({
+            error: "Failed to create blog post"
+        });
+    }
 })
 
 blogRoutes.put('/', async (c) => {
-	const prisma = new PrismaClient({
-	  datasourceUrl: c.env.DATABASE_URL,
-	}).$extends(withAccelerate())
-	
-	const body = await c.req.json();
-	const { success } = updateBlogInput.safeParse(body);
-	if(!success) {
-		c.status(400);
-		return c.json({
-			error: "Invalid request"
-		});
-	}
-	const userId = c.get("userId");
+    const prisma = new PrismaClient({
+      datasourceUrl: c.env.DATABASE_URL,
+    }).$extends(withAccelerate())
+    
+    const body = await c.req.json();
+    const { success } = updateBlogInput.safeParse(body);
+    if(!success) {
+        c.status(400);
+        return c.json({
+            error: "Invalid request"
+        });
+    }
+    const userId = c.get("userId");
 
-	const blog = await prisma.post.update({
-		where: {
-			id: body.id
-		},
-		data: {
-			title: body.title,
-			content: body.content,
-			authorId: userId
-		}
-	})
-	return c.json({
-		id: blog.id
-	})
+    const blog = await prisma.post.update({
+        where: {
+            id: body.id
+        },
+        data: {
+            title: body.title,
+            content: body.content,
+            imageUrl: body.imageUrl || null,
+            authorId: userId
+        }
+    })
+    return c.json({
+        id: blog.id
+    })
 })
 
 blogRoutes.get('/bulk', async (c) => {
-	const prisma = new PrismaClient({
-	  datasourceUrl: c.env.DATABASE_URL,
-	}).$extends(withAccelerate())
+    const prisma = new PrismaClient({
+      datasourceUrl: c.env.DATABASE_URL,
+    }).$extends(withAccelerate())
 
-	const blogs = await prisma.post.findMany({
+    const blogs = await prisma.post.findMany({
         select: {
-			title: true,
+            title: true,
             content: true,
+            imageUrl: true,
             author: {
-				select: {
-					name: true
+                select: {
+                    name: true
                 }
             },
-			id: true
+            id: true
         }
     });
 
-	return c.json({
-		blogs
-	})
+    return c.json({
+        blogs
+    })
 })
 
 blogRoutes.get('/:id', async (c) => {
-	const prisma = new PrismaClient({
-	  datasourceUrl: c.env.DATABASE_URL,
-	}).$extends(withAccelerate())
-	
-	const id = c.req.param("id");
+    const prisma = new PrismaClient({
+      datasourceUrl: c.env.DATABASE_URL,
+    }).$extends(withAccelerate())
+    
+    const id = c.req.param("id");
 
-	try {
-		const blog = await prisma.post.findFirst({
-			where: {
-				id: String(id)
-			},
-			select: {
-				title: true,
-				content: true,
-				author: {
-					select: {
-						name: true
-					}
-				},
-				id: true
-			}
-		})
-		return c.json({
-			blog
-		})
-	} catch (error) {
-		c.status(500);
-		return c.json({
-			status: 'error',
-		})
-	}
+    try {
+        const blog = await prisma.post.findFirst({
+            where: {
+                id: String(id)
+            },
+            select: {
+                title: true,
+                content: true,
+                imageUrl: true,
+                author: {
+                    select: {
+                        name: true
+                    }
+                },
+                id: true
+            }
+        })
+        
+        return c.json({
+            blog
+        })
+    } catch (error) {
+        c.status(500);
+        return c.json({
+            status: 'error',
+        })
+    }
 })
 
 export default blogRoutes
