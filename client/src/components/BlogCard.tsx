@@ -3,23 +3,32 @@
 import { Link } from "react-router-dom";
 import { Avatar } from "./Avatar";
 import { motion } from "framer-motion";
+import { Heart, Clock } from "lucide-react";
 
 interface BlogCardProps {
     id: string;
     authorName: string;
     title: string;
     content: string;
-    publishedDate: string;
+    excerpt?: string;
+    publishedDate: string; // This should be publishedAt from backend
+    createdAt: string;
     imageUrl?: string;
+    category: string;      // New field
+    likes: number;         // New field
 }
 
 export const BlogCard = ({
     id,
     authorName,
-    publishedDate,
     title,
     content,
+    excerpt,
+    publishedDate,
+    createdAt,
     imageUrl,
+    category,
+    likes,
 }: BlogCardProps) => {
     // Generate a consistent random profile image based on author name
     const getProfileImageUrl = (name: string) => {
@@ -39,6 +48,58 @@ export const BlogCard = ({
         return `https://picsum.photos/400/300?random=${id}`;
     };
 
+    // Format date to human readable format
+    const formatDate = (dateString: string) => {
+        const date = new Date(dateString);
+        const now = new Date();
+        const diffInMilliseconds = now.getTime() - date.getTime();
+        const diffInDays = Math.floor(diffInMilliseconds / (1000 * 60 * 60 * 24));
+
+        if (diffInDays === 0) {
+            const diffInHours = Math.floor(diffInMilliseconds / (1000 * 60 * 60));
+            if (diffInHours === 0) {
+                const diffInMinutes = Math.floor(diffInMilliseconds / (1000 * 60));
+                return diffInMinutes <= 1 ? 'Just now' : `${diffInMinutes} min ago`;
+            }
+            return diffInHours === 1 ? '1 hour ago' : `${diffInHours} hours ago`;
+        } else if (diffInDays === 1) {
+            return 'Yesterday';
+        } else if (diffInDays < 7) {
+            return `${diffInDays} days ago`;
+        } else {
+            return date.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+        }
+    };
+
+    // Calculate read time based on content length
+    const calculateReadTime = (text: string) => {
+        const wordsPerMinute = 200;
+        const wordCount = text.split(' ').length;
+        const readTime = Math.ceil(wordCount / wordsPerMinute);
+        return readTime;
+    };
+
+    // Get category color
+    const getCategoryColor = (cat: string) => {
+        const colors: { [key: string]: string } = {
+            'Technology': 'bg-blue-100 text-blue-800',
+            'Business': 'bg-green-100 text-green-800',
+            'Health': 'bg-red-100 text-red-800',
+            'Lifestyle': 'bg-purple-100 text-purple-800',
+            'Education': 'bg-yellow-100 text-yellow-800',
+            'Entertainment': 'bg-pink-100 text-pink-800',
+            'General': 'bg-gray-100 text-gray-800',
+        };
+        return colors[cat] || colors['General'];
+    };
+
+    const displayText = excerpt || content;
+    const readTime = calculateReadTime(content);
+
     return (
         <div className="w-full flex justify-center px-2 sm:px-6 py-4 sm:py-8">
             <Link to={`/blog/${id}`} className="w-full max-w-5xl">
@@ -51,6 +112,13 @@ export const BlogCard = ({
                     <div className="flex flex-col md:flex-row md:items-center gap-6 md:gap-12 py-6 sm:py-8 border-b border-gray-100 group-hover:border-gray-200 transition-colors duration-300">
                         {/* Left Content Section */}
                         <div className="flex-1 space-y-3 sm:space-y-4 order-2 md:order-1">
+                            {/* Category Badge */}
+                            <div className="flex items-center gap-2 mb-2">
+                                <span className={`px-2 py-1 text-xs font-medium rounded-full ${getCategoryColor(category)}`}>
+                                    {category}
+                                </span>
+                            </div>
+
                             {/* Author Info */}
                             <div className="flex items-center space-x-2 sm:space-x-3 mb-2 sm:mb-4">
                                 <Avatar
@@ -64,10 +132,13 @@ export const BlogCard = ({
                                     </span>
                                     <Circle />
                                     <span className="text-gray-500 capitalize">
-                                        {publishedDate}
+                                        {formatDate(publishedDate || createdAt)}
                                     </span>
                                     <Circle />
-                                    <span className="text-gray-500">{`${Math.ceil(content.length / 100)} min read`}</span>
+                                    <span className="text-gray-500 flex items-center gap-1">
+                                        <Clock className="w-3 h-3" />
+                                        {readTime} min read
+                                    </span>
                                 </div>
                             </div>
 
@@ -81,9 +152,20 @@ export const BlogCard = ({
                             </motion.h2>
 
                             {/* Excerpt */}
-                            <p className="text-gray-600 text-sm sm:text-base md:text-lg leading-relaxed line-clamp-2 sm:line-clamp-3 group-hover:text-gray-700 transition-colors duration-300 mb-0">
-                                {content.slice(0, 200)}...
+                            <p className="text-gray-600 text-sm sm:text-base md:text-lg leading-relaxed line-clamp-2 sm:line-clamp-3 group-hover:text-gray-700 transition-colors duration-300 mb-3">
+                                {displayText.slice(0, 200)}...
                             </p>
+
+                            {/* Post Stats */}
+                            <div className="flex items-center gap-4 text-sm text-gray-500">
+                                <div className="flex items-center gap-1">
+                                    <Heart className="w-4 h-4" />
+                                    <span>{likes}</span>
+                                </div>
+                                {/* <span className="text-xs">
+                                    Published {formatDate(publishedDate || createdAt)}
+                                </span> */}
+                            </div>
                         </div>
 
                         {/* Right Image Section */}

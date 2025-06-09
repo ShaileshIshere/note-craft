@@ -66,7 +66,7 @@ export const Blogs = () => {
             <Appbar />
 
             {/* Hero Section with Featured Slider */}
-            <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 py-6 sm:py-16">
+            <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 py-6 sm:py-10">
                 <FeaturedSlider />
             </section>
 
@@ -121,11 +121,15 @@ export const Blogs = () => {
                                 >
                                     <BlogCard
                                         id={blog.id}
-                                        authorName={blog.author.name}
-                                        publishedDate="16 Aug 2024"
+                                        authorName={blog.author.name || "Anonymous"}
                                         title={blog.title}
                                         content={blog.content}
+                                        excerpt={blog.excerpt}
+                                        publishedDate={blog.publishedAt}
+                                        createdAt={blog.createdAt}
                                         imageUrl={blog.imageUrl}
+                                        category={blog.category}
+                                        likes={blog.likes}
                                     />
                                 </motion.div>
                             ))}

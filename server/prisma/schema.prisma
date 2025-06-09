@@ -13,15 +13,22 @@ model User {
   name     String?
   password String
   posts    Post[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Post {
   id          String   @id @default(cuid())
   title       String
   content     String
-  imageUrl    String?  // This MUST be present
+  excerpt     String?  // Short description for previews
+  imageUrl    String?  
   published   Boolean  @default(false)
+  category    String   @default("General") // Simple string category
   author      User     @relation(fields: [authorId], references: [id])
   authorId    String
+  likes       Int      @default(0)  // Track post likes only
   createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  publishedAt DateTime? // Real publish date when published becomes true
 }

@@ -5,113 +5,21 @@ import {
     ChevronLeft,
     ChevronRight,
     Clock,
-    Star,
     ArrowUpRight,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import { useMediaQuery } from "../hooks/use-media-querry";
-
-interface FeaturedArticle {
-    id: string;
-    title: string;
-    excerpt: string;
-    imageUrl: string;
-    category: string;
-    readTime: string;
-    author: string;
-    date: string;
-    featured?: boolean;
-}
-
-const featuredArticles: FeaturedArticle[] = [
-    {
-        id: "1",
-        title: "The Art of Storytelling in Modern Literature",
-        excerpt:
-            "Explore how contemporary authors are reshaping narrative techniques and pushing the boundaries of traditional storytelling.",
-        imageUrl: "https://picsum.photos/1200/600?random=1001",
-        category: "Literature",
-        readTime: "8 min read",
-        author: "Eleanor Blackwood",
-        date: "June 4, 2024",
-        featured: true,
-    },
-    {
-        id: "2",
-        title: "Architectural Wonders of the Ancient World",
-        excerpt:
-            "Discover the engineering marvels and artistic brilliance behind structures that have stood the test of time.",
-        imageUrl: "https://picsum.photos/1200/600?random=1002",
-        category: "History",
-        readTime: "12 min read",
-        author: "Marcus Aurelius",
-        date: "May 28, 2024",
-    },
-    {
-        id: "3",
-        title: "The Philosophy of Time: Past, Present, and Future",
-        excerpt:
-            "A deep dive into how philosophers throughout history have conceptualized time and its passage through human experience.",
-        imageUrl: "https://picsum.photos/1200/600?random=1003",
-        category: "Philosophy",
-        readTime: "10 min read",
-        author: "Sophia Chen",
-        date: "May 15, 2024",
-        featured: true,
-    },
-    {
-        id: "4",
-        title: "Classical Music in the Digital Age",
-        excerpt:
-            "How orchestras and composers are adapting centuries-old traditions to reach new audiences in the streaming era.",
-        imageUrl: "https://picsum.photos/1200/600?random=1004",
-        category: "Music",
-        readTime: "7 min read",
-        author: "Johannes Weber",
-        date: "June 1, 2024",
-    },
-    {
-        id: "5",
-        title: "The Lost Art of Letter Writing",
-        excerpt:
-            "In an age of instant messaging, discover why handwritten correspondence still holds profound emotional and historical value.",
-        imageUrl: "https://picsum.photos/1200/600?random=1005",
-        category: "Culture",
-        readTime: "9 min read",
-        author: "Victoria Harrington",
-        date: "May 22, 2024",
-    },
-    {
-        id: "6",
-        title: "Renaissance Painting Techniques Revealed",
-        excerpt:
-            "New research uncovers the secrets behind the masterpieces of Leonardo, Michelangelo, and their contemporaries.",
-        imageUrl: "https://picsum.photos/1200/600?random=1006",
-        category: "Art",
-        readTime: "11 min read",
-        author: "Rafael Donato",
-        date: "June 7, 2024",
-        featured: true,
-    },
-    {
-        id: "7",
-        title: "The Science of Crafting Perfect Tea",
-        excerpt:
-            "From water temperature to steeping time, explore the precise methodology behind brewing the world's most consumed beverage.",
-        imageUrl: "https://picsum.photos/1200/600?random=1007",
-        category: "Gastronomy",
-        readTime: "6 min read",
-        author: "Mei Lin",
-        date: "May 19, 2024",
-    },
-];
+import { useFeaturedBlogs } from "../hooks";
 
 export const FeaturedSlider = () => {
+    const { loading, blogs: featuredArticles } = useFeaturedBlogs();
     const [currentSlide, setCurrentSlide] = useState(0);
     const [isAutoPlaying, setIsAutoPlaying] = useState(true);
     const [direction, setDirection] = useState(0);
     const [isPaused, setIsPaused] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
+    const navigate = useNavigate();
 
     const isMobile = useMediaQuery("(max-width: 768px)");
     const isTablet = useMediaQuery("(max-width: 1024px)");
@@ -129,21 +37,67 @@ export const FeaturedSlider = () => {
     }, [totalSlides]);
 
     useEffect(() => {
-        if (!isAutoPlaying || isPaused) return;
+        if (!isAutoPlaying || isPaused || totalSlides === 0) return;
 
         const interval = setInterval(() => {
             nextSlide();
         }, 6000);
 
         return () => clearInterval(interval);
-    }, [isAutoPlaying, isPaused, nextSlide]);
+    }, [isAutoPlaying, isPaused, nextSlide, totalSlides]);
+
+    // Loading state
+    if (loading) {
+        return (
+            <div className="relative w-full">
+                <div className="text-center mb-8 sm:mb-16">
+                    <div className="animate-pulse">
+                        <div className="h-8 bg-gray-300 rounded w-1/3 mx-auto mb-4"></div>
+                        <div className="h-4 bg-gray-200 rounded w-1/2 mx-auto"></div>
+                    </div>
+                </div>
+                <div className="relative w-full h-[500px] md:h-[600px] lg:h-[650px] bg-gray-200 animate-pulse rounded-xl"></div>
+            </div>
+        );
+    }
+
+    // No featured articles
+    if (featuredArticles.length === 0) {
+        return (
+            <div className="relative w-full">
+                <div className="text-center mb-8 sm:mb-16">
+                    <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
+                        No Stories Available Yet
+                    </h2>
+                    <p className="text-gray-600">
+                        Check back soon for amazing content!
+                    </p>
+                </div>
+            </div>
+        );
+    }
 
     const currentArticle = featuredArticles[currentSlide];
+
+    // Helper functions
+    const formatDate = (dateString: string) => {
+        return new Date(dateString).toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+        });
+    };
+
+    const calculateReadTime = (content: string) => {
+        const wordsPerMinute = 200;
+        const wordCount = content.split(" ").length;
+        const readTime = Math.ceil(wordCount / wordsPerMinute);
+        return `${readTime} min read`;
+    };
 
     // Calculate visible slides for the preview
     const getVisibleSlides = () => {
         const result = [];
-        // On mobile, show fewer slides
         const range = isMobile ? 1 : isTablet ? 2 : 2;
 
         for (let i = -range; i <= range; i++) {
@@ -162,7 +116,7 @@ export const FeaturedSlider = () => {
     return (
         <div className="relative w-full">
             {/* Elegant Header with Blue Theme */}
-            <div className="text-center mb-8 sm:mb-16">
+            <div className="text-center mb-8 sm:mb-12">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -177,10 +131,7 @@ export const FeaturedSlider = () => {
                         <div className="w-[100px] sm:w-[150px] md:w-[200px] h-1 bg-gradient-to-r from-blue-400 to-blue-300 mx-auto mt-1 rounded-full opacity-60"></div>
                     </div>
                     <p className="text-sm sm:text-base md:text-lg text-gray-600 mt-4 sm:mt-6 max-w-2xl mx-auto px-2 md:px-4">
-                        Discover our handpicked collection of exceptional
-                        articles and explore our curated collection of articles,
-                        insights, and stories from talented writers around the
-                        world.
+                        Discover our handpicked collection of exceptional articles and explore our curated collection of articles, insights, and stories from talented writers around the world.
                     </p>
                 </motion.div>
             </div>
@@ -222,7 +173,7 @@ export const FeaturedSlider = () => {
                                 <motion.img
                                     src={
                                         currentArticle.imageUrl ||
-                                        "/placeholder.svg"
+                                        "https://picsum.photos/800/600"
                                     }
                                     alt={currentArticle.title}
                                     className="w-full h-full object-cover"
@@ -242,16 +193,8 @@ export const FeaturedSlider = () => {
                                 >
                                     <div className="flex items-center gap-2">
                                         <span className="px-2 sm:px-4 py-1 sm:py-2 bg-blue-600 text-white text-xs sm:text-sm font-semibold tracking-wide uppercase rounded-lg shadow-lg backdrop-blur-sm">
-                                            {currentArticle.category}
+                                            Featured
                                         </span>
-                                        {currentArticle.featured && (
-                                            <div className="flex items-center gap-1 px-2 sm:px-3 py-1 sm:py-2 bg-yellow-500 text-white text-xs sm:text-sm font-semibold rounded-lg shadow-lg">
-                                                <Star className="w-3 h-3 fill-current" />
-                                                <span className="hidden sm:inline">
-                                                    Featured
-                                                </span>
-                                            </div>
-                                        )}
                                     </div>
                                 </motion.div>
 
@@ -266,16 +209,19 @@ export const FeaturedSlider = () => {
                                         <div className="flex items-center justify-between">
                                             <div>
                                                 <p className="text-xs font-semibold text-gray-900">
-                                                    {currentArticle.author}
+                                                    {currentArticle.author.name ||
+                                                        "Anonymous"}
                                                 </p>
                                                 <p className="text-xs text-gray-600">
-                                                    {currentArticle.date}
+                                                    {formatDate(currentArticle.createdAt)}
                                                 </p>
                                             </div>
                                             <div className="flex items-center gap-1 text-blue-600">
                                                 <Clock className="w-3 h-3" />
                                                 <span className="text-xs font-medium">
-                                                    {currentArticle.readTime}
+                                                    {calculateReadTime(
+                                                        currentArticle.content,
+                                                    )}
                                                 </span>
                                             </div>
                                         </div>
@@ -298,17 +244,14 @@ export const FeaturedSlider = () => {
                                     {/* Article Number */}
                                     <div className="flex items-center gap-2 sm:gap-4 mb-3 sm:mb-6">
                                         <span className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-blue-100 leading-none">
-                                            {String(currentSlide + 1).padStart(
-                                                2,
-                                                "0",
-                                            )}
+                                            {String(currentSlide + 1).padStart(2, "0")}
                                         </span>
                                         <div className="flex flex-col">
                                             <span className="text-xs sm:text-sm font-medium text-blue-600 uppercase tracking-wide">
                                                 Article
                                             </span>
                                             <span className="text-xs text-gray-500">
-                                                of the week
+                                                featured
                                             </span>
                                         </div>
                                     </div>
@@ -341,17 +284,20 @@ export const FeaturedSlider = () => {
                                         <div className="flex items-center gap-4">
                                             <div>
                                                 <p className="text-sm font-semibold text-gray-900">
-                                                    {currentArticle.author}
+                                                    {currentArticle.author.name ||
+                                                        "Anonymous"}
                                                 </p>
                                                 <div className="flex items-center gap-2 text-xs text-gray-600">
                                                     <span>
-                                                        {currentArticle.date}
+                                                        {formatDate(
+                                                            currentArticle.createdAt,
+                                                        )}
                                                     </span>
                                                     <span>•</span>
                                                     <span>
-                                                        {
-                                                            currentArticle.readTime
-                                                        }
+                                                        {calculateReadTime(
+                                                            currentArticle.content,
+                                                        )}
                                                     </span>
                                                 </div>
                                             </div>
@@ -363,7 +309,12 @@ export const FeaturedSlider = () => {
                                         animate={{ opacity: 1, y: 0 }}
                                         transition={{ delay: 0.8 }}
                                     >
-                                        <button className="group relative px-4 sm:px-6 md:px-8 py-2 sm:py-3 md:py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-sm sm:text-base font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
+                                        <button
+                                            className="group relative px-4 sm:px-6 md:px-8 py-2 sm:py-3 md:py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-sm sm:text-base font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden"
+                                            onClick={() =>
+                                                navigate(`/blog/${currentArticle.id}`)
+                                            }
+                                        >
                                             <span className="relative z-10 flex items-center gap-2">
                                                 Read Full Article
                                                 <ArrowUpRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300" />
@@ -507,9 +458,9 @@ export const FeaturedSlider = () => {
                                         <span className="text-[8px] sm:text-xs text-blue-200">
                                             {article.category}
                                         </span>
-                                        {article.featured && (
+                                        {/* {article.featured && (
                                             <Star className="w-2 h-2 sm:w-3 sm:h-3 text-yellow-400 fill-current" />
-                                        )}
+                                        )} */}
                                     </div>
                                 </div>
                             </div>
