@@ -128,10 +128,14 @@ export const Auth = ({ type }: { type: "signup" | "signin" }) => {
             localStorage.setItem("token", jwt);
 
             const name = response.data.name;
+            localStorage.setItem("authorName", name || "");
             setAuthorName(name);
 
             // Success message
             showAuthToast(`Welcome to Notecraft, ${name || "there"}! 🎉`);
+
+            // turn off the auth loader after successful login
+            setAuthLoader(false);
 
             // Small delay for better UX
             setTimeout(() => {

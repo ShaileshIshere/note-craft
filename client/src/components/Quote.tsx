@@ -143,8 +143,8 @@ export const Quote = () => {
                 >
                     <motion.div
                         className="flex items-center justify-center space-x-3"
-                        whileHover={{ scale: 1.05 }}
-                        transition={{ duration: 0.3 }}
+                        // whileHover={{ scale: 1.05 }}
+                        // transition={{ duration: 0.3 }}
                     >
                         <div className="font-medium text-6xl tracking-tight">
                             <span className="text-white font-serif">note</span>
@@ -154,8 +154,8 @@ export const Quote = () => {
                     <motion.div
                         className="mt-4 h-1 w-32 bg-white/30 mx-auto rounded-full"
                         initial={{ width: 0 }}
-                        animate={{ width: 128 }}
-                        transition={{ duration: 1.5, delay: 0.5 }}
+                        animate={{ width: 200 }}
+                        transition={{ duration: 1, delay: 0.3 }}
                     />
                 </motion.div>
 

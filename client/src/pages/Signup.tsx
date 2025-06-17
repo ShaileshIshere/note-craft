@@ -9,9 +9,9 @@ export const Signup = () => {
             </div>
             <div className="hidden lg:block relative">
                 <Quote />
-                <div className="absolute bottom-4 left-4 text-xs text-gray-500">
+                {/* <div className="absolute bottom-4 left-4 text-xs text-gray-500">
                     © 2025 Medium Blog. All rights reserved.
-                </div>
+                </div> */}
             </div>
         </div>
     );

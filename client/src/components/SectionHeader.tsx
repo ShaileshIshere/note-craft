@@ -2,6 +2,7 @@
 
 import { TrendingUp, Users, BookOpen } from "lucide-react";
 import { motion } from "framer-motion";
+import { useBlogs } from "../hooks";
 
 interface SectionHeaderProps {
     title: string;
@@ -14,6 +15,28 @@ export const SectionHeader = ({
     subtitle,
     showStats = false,
 }: SectionHeaderProps) => {
+    const { blogs, loading } = useBlogs();
+
+    // Calculate stats from existing blog data
+    const stats = {
+        totalPosts: blogs.length,
+        totalUsers: new Set(blogs.map((blog) => blog.author.name)).size, // Unique authors
+        totalCategories: new Set(
+            blogs.map((blog) => blog.category).filter(Boolean)
+        ).size,
+    };
+
+    // Format numbers for display
+    const formatNumber = (num: number): string => {
+        if (num >= 1000000) {
+            return Math.floor(num / 1000000) + "M+";
+        } else if (num >= 1000) {
+            return Math.floor(num / 1000) + "K+";
+        } else {
+            return num + "+";
+        }
+    };
+
     return (
         <div className="text-center mb-8 sm:mb-12">
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-3 sm:mb-4">
@@ -33,6 +56,7 @@ export const SectionHeader = ({
                     transition={{ duration: 0.5, staggerChildren: 0.1 }}
                     viewport={{ once: true }}
                 >
+                    {/* Articles Count */}
                     <motion.div
                         className="text-center"
                         initial={{ opacity: 0, y: 20 }}
@@ -44,12 +68,18 @@ export const SectionHeader = ({
                             <BookOpen className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
                         </div>
                         <div className="text-xl sm:text-2xl font-bold text-gray-900">
-                            150+
+                            {loading ? (
+                                <div className="w-12 h-6 bg-gray-200 rounded animate-pulse mx-auto"></div>
+                            ) : (
+                                formatNumber(stats.totalPosts)
+                            )}
                         </div>
                         <div className="text-xs sm:text-sm text-gray-600">
                             Articles
                         </div>
                     </motion.div>
+
+                    {/* Authors/Readers Count */}
                     <motion.div
                         className="text-center"
                         initial={{ opacity: 0, y: 20 }}
@@ -61,12 +91,18 @@ export const SectionHeader = ({
                             <Users className="w-5 h-5 sm:w-6 sm:h-6 text-green-600" />
                         </div>
                         <div className="text-xl sm:text-2xl font-bold text-gray-900">
-                            10K+
+                            {loading ? (
+                                <div className="w-12 h-6 bg-gray-200 rounded animate-pulse mx-auto"></div>
+                            ) : (
+                                formatNumber(stats.totalUsers)
+                            )}
                         </div>
                         <div className="text-xs sm:text-sm text-gray-600">
                             Readers
                         </div>
                     </motion.div>
+
+                    {/* Categories Count */}
                     <motion.div
                         className="text-center"
                         initial={{ opacity: 0, y: 20 }}
@@ -78,7 +114,11 @@ export const SectionHeader = ({
                             <TrendingUp className="w-5 h-5 sm:w-6 sm:h-6 text-purple-600" />
                         </div>
                         <div className="text-xl sm:text-2xl font-bold text-gray-900">
-                            25+
+                            {loading ? (
+                                <div className="w-12 h-6 bg-gray-200 rounded animate-pulse mx-auto"></div>
+                            ) : (
+                                stats.totalCategories + "+"
+                            )}
                         </div>
                         <div className="text-xs sm:text-sm text-gray-600">
                             Categories
