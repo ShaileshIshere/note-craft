@@ -48,7 +48,7 @@ export const PublishButton = ({
                 excerpt: description.substring(0, 150) + '...',
             };
 
-            console.log("Publishing with data:", requestData);
+            // console.log("Publishing with data:", requestData);
 
             const response = await axios.post(
                 `${BACKEND_URL}/api/v1/blog?_t=${Date.now()}`,
@@ -60,7 +60,7 @@ export const PublishButton = ({
                 },
             );
 
-            console.log("Publish response:", response.data);
+            // console.log("Publish response:", response.data);
 
             // Add a small delay to show completion before navigating
             setTimeout(() => {

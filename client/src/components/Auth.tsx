@@ -128,6 +128,7 @@ export const Auth = ({ type }: { type: "signup" | "signin" }) => {
             localStorage.setItem("token", jwt);
 
             const name = response.data.name;
+            localStorage.setItem("authorName", name || "");
             setAuthorName(name);
 
             // Success message

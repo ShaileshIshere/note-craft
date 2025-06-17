@@ -87,12 +87,12 @@ export const useFeaturedBlogs = () => {
     const [blogs, setBlogs] = useState<FeaturedBlog[]>([]);
 
     useEffect(() => {
-        console.log("Fetching from:", `${BACKEND_URL}/api/v1/blog/featured`); // Debug log
+        // console.log("Fetching from:", `${BACKEND_URL}/api/v1/blog/featured`);
 
         axios
             .get(`${BACKEND_URL}/api/v1/blog/featured`)
             .then((response) => {
-                console.log("Featured blogs response:", response.data); // Debug log
+                // console.log("Featured blogs response:", response.data);
                 setBlogs(response.data.blogs);
                 setLoading(false);
             })

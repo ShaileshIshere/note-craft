@@ -2,7 +2,6 @@
 
 import type { Blog } from "../hooks";
 import { Appbar } from "./Appbar";
-import { Avatar } from "./Avatar";
 import { motion } from "framer-motion";
 import { Calendar, Clock, ArrowLeft, Heart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -167,10 +166,11 @@ export const FullBlog = ({ blog }: { blog: Blog }) => {
                     {/* Author and Meta Information */}
                     <div className="flex items-center justify-between flex-wrap gap-4 mb-6 sm:mb-8">
                         <div className="flex items-center gap-3 sm:gap-4">
-                            <Avatar
+                            {/* <Avatar
+                                imageUrl="userAvatar.jpg"
                                 size="big"
                                 name={blog.author.name || "Anonymous"}
-                            />
+                            /> */}
                             <div className="flex flex-col">
                                 <span className="text-base sm:text-lg font-semibold text-gray-900">
                                     {blog.author.name || "Anonymous"}
@@ -327,7 +327,7 @@ export const FullBlog = ({ blog }: { blog: Blog }) => {
                 </motion.article>
 
                 {/* Floating Like Button (Mobile) */}
-                <motion.div
+                {/* <motion.div
                     className="fixed bottom-6 right-6 sm:hidden z-50"
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
@@ -357,7 +357,7 @@ export const FullBlog = ({ blog }: { blog: Blog }) => {
                             }`} />
                         </motion.div>
                     </motion.button>
-                </motion.div>
+                </motion.div> */}
 
                 {/* Back to Articles */}
                 <div className="mt-12 sm:mt-16 text-center">

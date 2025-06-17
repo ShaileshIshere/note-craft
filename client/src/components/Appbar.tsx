@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import { Avatar } from "./Avatar";
 import { useRecoilValue } from "recoil";
 import { userNameState } from "../hooks/userAtom";
 
@@ -37,11 +36,18 @@ export const Appbar = () => {
                                     d="M12 4v16m8-8H4"
                                 />
                             </svg>
-                            <span>Create</span>
+                            <span className="hidden md:block">Create</span>
                         </span>
                     </button>
                 </Link>
-                <Avatar size={"big"} name={authorName || ""} />
+
+                <div className="relative">
+                    <img
+                        src="https://res.cloudinary.com/ddu8stsgr/image/upload/v1750142708/userAvatar_alvm1b.jpg"
+                        alt={authorName || "User Avatar"}
+                        className="w-10 h-10 rounded-full object-cover border-1 border-black shadow-lg cursor-pointer"
+                    />
+                </div>
             </div>
         </div>
     );
