@@ -2,7 +2,7 @@
 
 A full-stack blogging platform built with React, TypeScript, and Hono, featuring a beautiful UI, authentication system, and seamless content management.
 
-![NoteCraft Banner](client/public/banner.png)
+![NoteCraft Banner](client/public/notecraft-logo.png)
 
 ## 🚀 Features
 
