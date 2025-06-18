@@ -65,7 +65,7 @@ export const Footer = () => {
                             </div>
 
                             {/* Enhanced Stats */}
-                            <motion.div
+                            {/* <motion.div
                                 className="grid grid-cols-3 gap-4 sm:gap-6 lg:gap-8 pt-8 border-t border-blue-100/50"
                                 initial={{ opacity: 0, y: 20 }}
                                 whileInView={{ opacity: 1, y: 0 }}
@@ -105,7 +105,7 @@ export const Footer = () => {
                                         </div>
                                     </motion.div>
                                 ))}
-                            </motion.div>
+                            </motion.div> */}
                         </motion.div>
 
                         {/* Quick Links - Enhanced */}

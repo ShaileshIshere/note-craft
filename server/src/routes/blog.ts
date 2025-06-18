@@ -14,7 +14,6 @@ const blogRoutes = new Hono<{
     }
 }>();
 
-// Updated featured route with new fields
 blogRoutes.get('/featured', async (c) => {
     const prisma = new PrismaClient({
         datasourceUrl: c.env.DATABASE_URL,
@@ -23,7 +22,7 @@ blogRoutes.get('/featured', async (c) => {
     try {
         const recentPosts = await prisma.post.findMany({
             where: {
-                published: true  // Only show published posts
+                published: true
             },
             include: {
                 author: {
@@ -33,7 +32,7 @@ blogRoutes.get('/featured', async (c) => {
                 }
             },
             orderBy: {
-                publishedAt: 'desc' // Order by publish date, not create date
+                publishedAt: 'desc'
             },
             take: 10
         });
@@ -47,7 +46,6 @@ blogRoutes.get('/featured', async (c) => {
         const shuffled = recentPosts.sort(() => 0.5 - Math.random());
         const selectedPosts = shuffled.slice(0, Math.min(7, recentPosts.length));
 
-        // Include all new fields
         const featuredBlogs = selectedPosts.map(post => ({
             id: post.id,
             title: post.title,
@@ -55,10 +53,10 @@ blogRoutes.get('/featured', async (c) => {
             excerpt: post.excerpt || post.content.substring(0, 150) + '...',
             imageUrl: post.imageUrl,
             author: post.author,
-            category: post.category,        // New field
+            category: post.category,
             createdAt: post.createdAt,
-            publishedAt: post.publishedAt,  // New field
-            likes: post.likes               // New field
+            publishedAt: post.publishedAt,
+            likes: post.likes       
         }));
 
         return c.json({
@@ -70,7 +68,6 @@ blogRoutes.get('/featured', async (c) => {
     }
 });
 
-// Auth middleware (same as before)
 blogRoutes.use('/*', async (c, next) => {
     if (c.req.path.endsWith('/featured')) {
         await next();
@@ -107,7 +104,6 @@ blogRoutes.use('/*', async (c, next) => {
     }
 });
 
-// Updated POST route with new fields
 blogRoutes.post('/', async (c) => {
     const prisma = new PrismaClient({
       datasourceUrl: c.env.DATABASE_URL,
@@ -158,7 +154,6 @@ blogRoutes.post('/', async (c) => {
     }
 })
 
-// Like a post
 blogRoutes.post('/:id/like', async (c) => {
     const prisma = new PrismaClient({
         datasourceUrl: c.env.DATABASE_URL,
@@ -166,7 +161,7 @@ blogRoutes.post('/:id/like', async (c) => {
     
     const id = c.req.param("id");
     const body = await c.req.json();
-    const action = body.action; // 'like' or 'unlike'
+    const action = body.action;
 
     try {
         const post = await prisma.post.findUnique({
@@ -181,7 +176,6 @@ blogRoutes.post('/:id/like', async (c) => {
         let updatedPost;
         
         if (action === 'like') {
-            // Increment likes
             updatedPost = await prisma.post.update({
                 where: { id: String(id) },
                 data: {
@@ -191,7 +185,6 @@ blogRoutes.post('/:id/like', async (c) => {
                 }
             });
         } else if (action === 'unlike') {
-            // Decrement likes (but don't go below 0)
             updatedPost = await prisma.post.update({
                 where: { id: String(id) },
                 data: {
@@ -214,7 +207,6 @@ blogRoutes.post('/:id/like', async (c) => {
     }
 });
 
-// Updated PUT route with new fields
 blogRoutes.put('/', async (c) => {
     const prisma = new PrismaClient({
       datasourceUrl: c.env.DATABASE_URL,
@@ -230,7 +222,6 @@ blogRoutes.put('/', async (c) => {
     }
     const userId = c.get("userId");
 
-    // Check if this is being published for the first time
     const existingPost = await prisma.post.findUnique({
         where: { id: body.id },
         select: { published: true, publishedAt: true }
@@ -257,7 +248,6 @@ blogRoutes.put('/', async (c) => {
     })
 })
 
-// Updated bulk route with new fields
 blogRoutes.get('/bulk', async (c) => {
     const prisma = new PrismaClient({
       datasourceUrl: c.env.DATABASE_URL,
@@ -292,7 +282,6 @@ blogRoutes.get('/bulk', async (c) => {
     })
 })
 
-// Updated single blog route with new fields
 blogRoutes.get('/:id', async (c) => {
     const prisma = new PrismaClient({
       datasourceUrl: c.env.DATABASE_URL,

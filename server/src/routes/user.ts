@@ -26,7 +26,6 @@ userRoutes.post('/signup', async (c) => {
   }
 
   try {
-    // Check if user already exists
     const existingUser = await prisma.user.findUnique({
       where: {
         email: body.email
@@ -80,7 +79,6 @@ userRoutes.post('/signin', async (c) => {
   }
 
   try {
-    // First check if email exists
     const userByEmail = await prisma.user.findUnique({
       where: {
         email: body.email
@@ -94,7 +92,6 @@ userRoutes.post('/signin', async (c) => {
       });
     }
 
-    // Then check if password matches
     if (userByEmail.password !== body.password) {
       c.status(401);
       return c.json({
@@ -102,7 +99,6 @@ userRoutes.post('/signin', async (c) => {
       });
     }
 
-    // If both email and password are correct
     const token = await sign({
       id: userByEmail.id
     }, c.env.JWT_SECRET);
@@ -117,6 +113,23 @@ userRoutes.post('/signin', async (c) => {
     c.status(500);
     return c.json({
       message: "Unable to sign in. Please try again later"
+    });
+  }
+})
+
+userRoutes.get('/count', async (c) => {
+  const prisma = new PrismaClient({
+    datasourceUrl: c.env.DATABASE_URL,
+  }).$extends(withAccelerate())
+
+  try {
+    const count = await prisma.user.count();
+    return c.json({ count });
+  } catch (error) {
+    console.error('Error getting users count:', error);
+    c.status(500);
+    return c.json({
+      error: 'Failed to get users count' 
     });
   }
 })

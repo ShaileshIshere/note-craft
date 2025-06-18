@@ -174,7 +174,7 @@ export const Publish = () => {
                                                     ? `${cat.color} border-current shadow-md transform scale-105`
                                                     : `bg-white border-gray-200 text-gray-600 ${cat.hoverColor} hover:border-gray-300 hover:shadow-sm`
                                             }`}
-                                            whileHover={{ y: -2 }}
+                                            // whileHover={{ y: -2 }}
                                             whileTap={{ scale: 0.98 }}
                                         >
                                             {/* Selected indicator */}
