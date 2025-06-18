@@ -1,9 +1,47 @@
-import { Link } from "react-router-dom";
-import { useRecoilValue } from "recoil";
+import { Link, useNavigate } from "react-router-dom";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { userNameState } from "../hooks/userAtom";
+import { useState, useRef, useEffect } from "react";
+import { LogOut, User } from "lucide-react";
 
 export const Appbar = () => {
     const authorName = useRecoilValue(userNameState);
+    const setUserName = useSetRecoilState(userNameState);
+    const navigate = useNavigate();
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const dropdownRef = useRef<HTMLDivElement>(null);
+
+    // Close dropdown when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+                setIsDropdownOpen(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
+
+    const handleLogout = () => {
+        // Clear all localStorage items
+        localStorage.clear();
+        
+        // Reset user state
+        setUserName("");
+        
+        // Close dropdown
+        setIsDropdownOpen(false);
+        
+        // Navigate to signin page
+        navigate("/");
+    };
+
+    const toggleDropdown = () => {
+        setIsDropdownOpen(!isDropdownOpen);
+    };
 
     return (
         <div className="sticky top-0 z-50 backdrop-blur-3xl bg-white/20 border-b border-gray-200/50 flex justify-between items-center px-2 sm:px-20 py-4">
@@ -41,12 +79,37 @@ export const Appbar = () => {
                     </button>
                 </Link>
 
-                <div className="relative">
+                <div className="relative" ref={dropdownRef}>
                     <img
                         src="https://res.cloudinary.com/ddu8stsgr/image/upload/v1750142708/userAvatar_alvm1b.jpg"
                         alt={authorName || "User Avatar"}
-                        className="w-10 h-10 rounded-full object-cover border-1 border-black shadow-lg cursor-pointer"
+                        className="w-10 h-10 rounded-full object-cover border-1 border-black shadow-lg cursor-pointer hover:ring-2 hover:ring-blue-500 hover:ring-offset-1 transition-all duration-200"
+                        onClick={toggleDropdown}
                     />
+
+                    {/* Dropdown Menu */}
+                    {isDropdownOpen && (
+                        <div className="absolute right-0 mt-2 w-fit-screen bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50">
+                            {/* User Info */}
+                            <div className="px-4 py-2 border-b border-gray-100 cursor-default">
+                                <div className="flex items-center space-x-2">
+                                    <User className="w-4 h-4 text-gray-500" />
+                                    <span className="text-sm font-medium text-gray-900 truncate">
+                                        {authorName || "User"}
+                                    </span>
+                                </div>
+                            </div>
+
+                            {/* Logout Button */}
+                            <button
+                                onClick={handleLogout}
+                                className="w-full flex items-center space-x-2 px-4 py-2 text-left text-sm text-gray-700 hover:text-red-600 transition-colors duration-150"
+                            >
+                                <LogOut className="w-4 h-4" />
+                                <span>Logout</span>
+                            </button>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

@@ -3,6 +3,9 @@
 import { TrendingUp, Users, BookOpen } from "lucide-react";
 import { motion } from "framer-motion";
 import { useBlogs } from "../hooks";
+import { useState, useEffect } from "react";
+import axios from "axios";
+import { BACKEND_URL } from "../config";
 
 interface SectionHeaderProps {
     title: string;
@@ -16,11 +19,36 @@ export const SectionHeader = ({
     showStats = false,
 }: SectionHeaderProps) => {
     const { blogs, loading } = useBlogs();
+    const [totalUsers, setTotalUsers] = useState(0);
+    const [usersLoading, setUsersLoading] = useState(false);
+
+    // Fetch total users count
+    useEffect(() => {
+        const fetchTotalUsers = async () => {
+            if (!showStats) return;
+
+            setUsersLoading(true);
+            try {
+                const response = await axios.get(
+                    `${BACKEND_URL}/api/v1/user/count`
+                );
+                setTotalUsers(response.data.count || 0);
+            } catch (error) {
+                console.error("Error fetching users count:", error);
+                // Fallback to unique authors count if API fails
+                setTotalUsers(new Set(blogs.map((blog) => blog.author.name)).size);
+            } finally {
+                setUsersLoading(false);
+            }
+        };
+
+        fetchTotalUsers();
+    }, [showStats, blogs]);
 
     // Calculate stats from existing blog data
     const stats = {
         totalPosts: blogs.length,
-        totalUsers: new Set(blogs.map((blog) => blog.author.name)).size, // Unique authors
+        totalUsers: totalUsers,
         totalCategories: new Set(
             blogs.map((blog) => blog.category).filter(Boolean)
         ).size,
@@ -91,7 +119,7 @@ export const SectionHeader = ({
                             <Users className="w-5 h-5 sm:w-6 sm:h-6 text-green-600" />
                         </div>
                         <div className="text-xl sm:text-2xl font-bold text-gray-900">
-                            {loading ? (
+                            {loading || usersLoading ? (
                                 <div className="w-12 h-6 bg-gray-200 rounded animate-pulse mx-auto"></div>
                             ) : (
                                 formatNumber(stats.totalUsers)

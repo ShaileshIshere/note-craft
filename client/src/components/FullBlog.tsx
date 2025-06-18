@@ -294,7 +294,7 @@ export const FullBlog = ({ blog }: { blog: Blog }) => {
                         </section>
 
                         {/* Implementation Details Section */}
-                        <section>
+                        {/* <section>
                             <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6 flex items-center gap-3">
                                 <div className="w-1 h-6 sm:h-8 bg-gradient-to-b from-green-500 to-emerald-600 rounded-full"></div>
                                 Implementation Details
@@ -322,7 +322,7 @@ export const FullBlog = ({ blog }: { blog: Blog }) => {
                                     </div>
                                 </div>
                             </div>
-                        </section>
+                        </section> */}
                     </div>
                 </motion.article>
 
