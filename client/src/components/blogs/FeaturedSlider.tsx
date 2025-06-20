@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { ChevronLeft, ChevronRight, Clock, ArrowUpRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { useMediaQuery } from "../../hooks/use-media-querry";
+import { useMediaQuery } from "../../hooks/useMediaQuerry";
 import { useFeaturedBlogs } from "../../hooks";
 import { FeaturedSliderSkeleton } from "./FeaturedSliderSkeleton";
 

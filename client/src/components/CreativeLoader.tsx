@@ -45,16 +45,6 @@ export const CreativeLoader = () => {
                                     notecraft
                                 </motion.span>
                             </motion.div>
-
-                            {/* Blinking cursor */}
-                            {/* <motion.div
-                className="absolute top-0 right-0 w-0.5 h-16 bg-blue-400"
-                animate={{ opacity: [1, 0, 1] }}
-                transition={{
-                  duration: 1,
-                  repeat: Number.POSITIVE_INFINITY,
-                }}
-              /> */}
                         </div>
 
                         {/* Floating words animation */}
