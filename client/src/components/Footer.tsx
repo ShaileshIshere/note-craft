@@ -299,7 +299,7 @@ export const Footer = () => {
                         <div className="flex flex-col sm:flex-row justify-between items-center gap-4 sm:gap-6">
                             {/* Copyright with enhanced styling */}
                             <div className="hidden lg:flex text-gray-500 text-sm text-center lg:text-left items-center gap-2">
-                                <span>© 2024</span>
+                                <span>© 2025</span>
                                 <span className="font-medium text-2xl tracking-tight">
                                     <span className="text-gray-800 font-serif">
                                         note

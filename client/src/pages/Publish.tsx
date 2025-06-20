@@ -8,7 +8,7 @@ import { TitleEditor } from "../components/publish/TitleEditor";
 import { CategorySelector } from "../components/publish/CategorySelector";
 import { ImageUploadWrapper } from "../components/publish/ImageUploadWrapper";
 import { ContentEditor } from "../components/publish/ContentEditor";
-import { PublishButtonOptimized } from "../components/publish/PublishButtonOptimized";
+import { PublishButtonOptimized } from "../components/publish/PublishButton";
 import { WritingTips } from "../components/publish/WritingTips";
 import { CreativeLoader } from "../components/CreativeLoader";
 import { usePublishStore } from "../store/publishStore";
