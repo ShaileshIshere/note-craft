@@ -1,5 +1,5 @@
 import { Appbar } from "../components/Appbar";
-import { FullBlog } from "../components/FullBlog";
+import { FullBlog } from "../components/blog/FullBlog";
 import { Spinner } from "../components/Spinner";
 import { Layout } from "../components/Layout"; // Add this import
 import { useBlog } from "../hooks";
@@ -26,7 +26,7 @@ export const Blog = () => {
             </Layout>
         );
     }
-    
+
     return (
         <Layout>
             <FullBlog blog={blog} />

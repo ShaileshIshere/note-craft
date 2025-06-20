@@ -1,9 +1,9 @@
 "use client";
 
 import { Link } from "react-router-dom";
-import { Avatar } from "./Avatar";
 import { motion } from "framer-motion";
 import { Heart, Clock } from "lucide-react";
+import { Avatar } from "../Avatar";
 
 interface BlogCardProps {
     id: string;
@@ -14,8 +14,8 @@ interface BlogCardProps {
     publishedDate: string; // This should be publishedAt from backend
     createdAt: string;
     imageUrl?: string;
-    category: string;      // New field
-    likes: number;         // New field
+    category: string; // New field
+    likes: number; // New field
 }
 
 export const BlogCard = ({
@@ -53,24 +53,34 @@ export const BlogCard = ({
         const date = new Date(dateString);
         const now = new Date();
         const diffInMilliseconds = now.getTime() - date.getTime();
-        const diffInDays = Math.floor(diffInMilliseconds / (1000 * 60 * 60 * 24));
+        const diffInDays = Math.floor(
+            diffInMilliseconds / (1000 * 60 * 60 * 24),
+        );
 
         if (diffInDays === 0) {
-            const diffInHours = Math.floor(diffInMilliseconds / (1000 * 60 * 60));
+            const diffInHours = Math.floor(
+                diffInMilliseconds / (1000 * 60 * 60),
+            );
             if (diffInHours === 0) {
-                const diffInMinutes = Math.floor(diffInMilliseconds / (1000 * 60));
-                return diffInMinutes <= 1 ? 'Just now' : `${diffInMinutes} min ago`;
+                const diffInMinutes = Math.floor(
+                    diffInMilliseconds / (1000 * 60),
+                );
+                return diffInMinutes <= 1
+                    ? "Just now"
+                    : `${diffInMinutes} min ago`;
             }
-            return diffInHours === 1 ? '1 hour ago' : `${diffInHours} hours ago`;
+            return diffInHours === 1
+                ? "1 hour ago"
+                : `${diffInHours} hours ago`;
         } else if (diffInDays === 1) {
-            return 'Yesterday';
+            return "Yesterday";
         } else if (diffInDays < 7) {
             return `${diffInDays} days ago`;
         } else {
-            return date.toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric'
+            return date.toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
             });
         }
     };
@@ -78,7 +88,7 @@ export const BlogCard = ({
     // Calculate read time based on content length
     const calculateReadTime = (text: string) => {
         const wordsPerMinute = 200;
-        const wordCount = text.split(' ').length;
+        const wordCount = text.split(" ").length;
         const readTime = Math.ceil(wordCount / wordsPerMinute);
         return readTime;
     };
@@ -86,15 +96,15 @@ export const BlogCard = ({
     // Get category color
     const getCategoryColor = (cat: string) => {
         const colors: { [key: string]: string } = {
-            'Technology': 'bg-blue-100 text-blue-800',
-            'Business': 'bg-green-100 text-green-800',
-            'Health': 'bg-red-100 text-red-800',
-            'Lifestyle': 'bg-purple-100 text-purple-800',
-            'Education': 'bg-yellow-100 text-yellow-800',
-            'Entertainment': 'bg-pink-100 text-pink-800',
-            'General': 'bg-gray-100 text-gray-800',
+            Technology: "bg-blue-100 text-blue-800",
+            Business: "bg-green-100 text-green-800",
+            Health: "bg-red-100 text-red-800",
+            Lifestyle: "bg-purple-100 text-purple-800",
+            Education: "bg-yellow-100 text-yellow-800",
+            Entertainment: "bg-pink-100 text-pink-800",
+            General: "bg-gray-100 text-gray-800",
         };
-        return colors[cat] || colors['General'];
+        return colors[cat] || colors["General"];
     };
 
     const displayText = excerpt || content;
@@ -114,7 +124,9 @@ export const BlogCard = ({
                         <div className="flex-1 space-y-3 sm:space-y-4 order-2 md:order-1">
                             {/* Category Badge */}
                             <div className="flex items-center gap-2 mb-2">
-                                <span className={`px-2 py-1 text-xs font-medium rounded-full ${getCategoryColor(category)}`}>
+                                <span
+                                    className={`px-2 py-1 text-xs font-medium rounded-full ${getCategoryColor(category)}`}
+                                >
                                     {category}
                                 </span>
                             </div>

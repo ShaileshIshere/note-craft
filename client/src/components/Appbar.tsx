@@ -1,12 +1,11 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useRecoilValue, useSetRecoilState } from "recoil";
-import { userNameState } from "../hooks/userAtom";
 import { useState, useRef, useEffect } from "react";
 import { LogOut, User } from "lucide-react";
+import { useUserStore } from "../store/userStore";
 
 export const Appbar = () => {
-    const authorName = useRecoilValue(userNameState);
-    const setUserName = useSetRecoilState(userNameState);
+    const { username: authorName } = useUserStore();
+    const { setUsername } = useUserStore();
     const navigate = useNavigate();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
@@ -14,27 +13,30 @@ export const Appbar = () => {
     // Close dropdown when clicking outside
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
-            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+            if (
+                dropdownRef.current &&
+                !dropdownRef.current.contains(event.target as Node)
+            ) {
                 setIsDropdownOpen(false);
             }
         };
 
-        document.addEventListener('mousedown', handleClickOutside);
+        document.addEventListener("mousedown", handleClickOutside);
         return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
+            document.removeEventListener("mousedown", handleClickOutside);
         };
     }, []);
 
     const handleLogout = () => {
         // Clear all localStorage items
         localStorage.clear();
-        
+
         // Reset user state
-        setUserName("");
-        
+        setUsername("");
+
         // Close dropdown
         setIsDropdownOpen(false);
-        
+
         // Navigate to signin page
         navigate("/");
     };

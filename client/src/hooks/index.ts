@@ -76,10 +76,10 @@ export interface FeaturedBlog {
     author: {
         name: string;
     };
-    category: string;        // Added
+    category: string; // Added
     createdAt: string;
-    publishedAt: string;     // Added
-    likes: number;           // Added
+    publishedAt: string; // Added
+    likes: number; // Added
 }
 
 export const useFeaturedBlogs = () => {

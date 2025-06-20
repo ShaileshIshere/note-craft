@@ -2,10 +2,10 @@
 
 import { TrendingUp, Users, BookOpen } from "lucide-react";
 import { motion } from "framer-motion";
-import { useBlogs } from "../hooks";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { BACKEND_URL } from "../config";
+import { BACKEND_URL } from "../../config";
+import { useBlogs } from "../../hooks";
 
 interface SectionHeaderProps {
     title: string;
@@ -30,13 +30,15 @@ export const SectionHeader = ({
             setUsersLoading(true);
             try {
                 const response = await axios.get(
-                    `${BACKEND_URL}/api/v1/user/count`
+                    `${BACKEND_URL}/api/v1/user/count`,
                 );
                 setTotalUsers(response.data.count || 0);
             } catch (error) {
                 console.error("Error fetching users count:", error);
                 // Fallback to unique authors count if API fails
-                setTotalUsers(new Set(blogs.map((blog) => blog.author.name)).size);
+                setTotalUsers(
+                    new Set(blogs.map((blog) => blog.author.name)).size,
+                );
             } finally {
                 setUsersLoading(false);
             }
@@ -50,7 +52,7 @@ export const SectionHeader = ({
         totalPosts: blogs.length,
         totalUsers: totalUsers,
         totalCategories: new Set(
-            blogs.map((blog) => blog.category).filter(Boolean)
+            blogs.map((blog) => blog.category).filter(Boolean),
         ).size,
     };
 

@@ -4,10 +4,9 @@ import { Footer } from "./Footer";
 
 interface LayoutProps {
     children: ReactNode;
-    showFooter?: boolean;
 }
 
-export const Layout = ({ children, showFooter = true }: LayoutProps) => {
+export const Layout = ({ children }: LayoutProps) => {
     const { pathname } = useLocation();
 
     // Scroll to top when route changes
@@ -18,7 +17,7 @@ export const Layout = ({ children, showFooter = true }: LayoutProps) => {
     return (
         <>
             {children}
-            {showFooter && <Footer />}
+            <Footer />
         </>
     );
 };
