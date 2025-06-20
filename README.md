@@ -24,7 +24,7 @@ A full-stack blogging platform built with React, TypeScript, and Hono, featuring
 
 ### 🔧 Technical Features
 - **TypeScript** - Full type safety across the stack
-- **State Management** - Recoil for global state management
+- **State Management** - Zustand for global state management
 - **API Integration** - RESTful API with proper error handling
 - **Route Protection** - Secure routes requiring authentication
 - **Form Validation** - Client-side validation for better UX
@@ -62,7 +62,7 @@ A full-stack blogging platform built with React, TypeScript, and Hono, featuring
 - **Vite** - Fast build tool and dev server
 - **Tailwind CSS** - Utility-first CSS framework
 - **Framer Motion** - Animation library
-- **Recoil** - State management
+- **Zustand** - Lightweight state management
 - **React Router** - Client-side routing
 - **Axios** - HTTP client
 - **React Hot Toast** - Toast notifications
@@ -79,35 +79,92 @@ A full-stack blogging platform built with React, TypeScript, and Hono, featuring
 ## 📁 Project Structure
 
 ```
-medium/
+NoteCraft/
 ├── client/                 # Frontend React application
 │   ├── public/            # Static assets and screenshots
 │   ├── src/
 │   │   ├── components/    # Reusable UI components
+│   │   │   ├── auth/
+│   │   │   │   ├── AuthButton.tsx
+│   │   │   │   ├── AuthHeader.tsx
+│   │   │   │   ├── AuthLogo.tsx
+│   │   │   │   ├── EmailField.tsx
+│   │   │   │   ├── FormInput.tsx
+│   │   │   │   ├── NameField.tsx
+│   │   │   │   └── PasswordField.tsx
+│   │   │   ├── blog/
+│   │   │   │   ├── BackToBlogs.tsx
+│   │   │   │   ├── BlogLikeButton.tsx
+│   │   │   │   ├── BlogHeader.tsx
+│   │   │   │   ├── BlogImage.tsx
+│   │   │   │   ├── ExploreMoreButton.tsx
+│   │   │   │   ├── FullBlog.tsx
+│   │   │   │   └── BlogContent.tsx
+│   │   │   ├── blogs/
+│   │   │   │   ├── BlogFiltersContainer.tsx
+│   │   │   │   ├── BlogList.tsx
+│   │   │   │   ├── FeaturedSliderContainer.tsx
+│   │   │   │   ├── FeaturedSlider.tsx
+│   │   │   │   ├── SearchAndFilters.tsx
+│   │   │   │   ├── BlogCard.tsx
+│   │   │   │   ├── BlogCardSkeleton.tsx
+│   │   │   │   ├── FeaturedSliderSkeleton.tsx
+│   │   │   │   ├── SearchFiltersSkeleton.tsx
+│   │   │   │   ├── SectionHeader.tsx
+│   │   │   │   ├── SectionHeaderSkeleton.tsx
+│   │   │   │   └── BlogsSkeleton.tsx
+│   │   │   ├── Publish/
+│   │   │   │   ├── CategorySelector.tsx
+│   │   │   │   ├── ContentEditor.tsx
+│   │   │   │   ├── ImageUpload.tsx
+│   │   │   │   ├── ImageUploadWrapper.tsx
+│   │   │   │   ├── PublishButton.tsx
+│   │   │   │   ├── PublishHeader.tsx
+│   │   │   │   ├── TitleEditor.tsx
+│   │   │   │   └── WrittingTips.tsx
 │   │   │   ├── Appbar.tsx
+│   │   │   ├── Layout.tsx
 │   │   │   ├── Auth.tsx
-│   │   │   ├── AuthLoader.tsx
-│   │   │   ├── BlogCard.tsx
-│   │   │   ├── FeaturedSlider.tsx
-│   │   │   ├── ImageUpload.tsx
-│   │   │   └── PublishButton.tsx
+│   │   │   ├── Avatar.tsx
+│   │   │   ├── AnimatedElement.tsx
+│   │   │   ├── CreativeLoader.tsx
+│   │   │   ├── Footer.tsx
+│   │   │   ├── Quote.tsx
+│   │   │   └── Spinner.tsx
+│   │   ├── constants/     # Blog Categories
+│   │   │   └── categories.ts
 │   │   ├── hooks/         # Custom React hooks
+│   │   │   ├── index.ts
+│   │   │   ├── use-media-querry.ts
+│   │   │   └── useAuthSubmit.ts
 │   │   ├── pages/         # Page components
 │   │   │   ├── Blog.tsx
 │   │   │   ├── Blogs.tsx
 │   │   │   ├── Publish.tsx
 │   │   │   ├── Signin.tsx
 │   │   │   └── Signup.tsx
-│   │   ├── store/         # Recoil state management
-│   │   └── config/        # Configuration files
+│   │   ├── store/         # Zustand state management
+│   │   │   ├── userStore.ts
+│   │   │   ├── blogsStore.ts
+│   │   │   ├── blogViewStore.ts
+│   │   │   ├── publishStore.ts
+│   │   │   └── featuredStore.ts
+│   │   ├── utils/         # notifications and environment logic
+│   │   │   ├── blogHelper.ts
+│   │   │   └── toast.ts
+│   │   ├── App.tsx
+│   │   ├── Main.tsx
+│   │   └── config.ts       # Configuration files
 │   ├── package.json
 │   └── tailwind.config.js
-├── backend/               # Backend Hono application
+├── backend/                   # Backend Hono application
 │   ├── src/
-│   │   ├── routes/       # API route handlers
-│   │   ├── middleware/   # Authentication middleware
-│   │   └── index.ts      # Main server file
-│   ├── prisma/          # Database schema and migrations
+│   │   ├── routes/            # API route handlers
+│   │   ├── middleware/        # Authentication middleware
+│   │   └── index.ts           # Main server file
+│   ├── prisma/                # Database schema and migrations
+│   │   ├── migrations/        # old/new db models
+│   │   └── schema.prisma      # db schema
 │   └── package.json
 ├── common/              # Shared types and utilities
 │   ├── src/
