@@ -56,11 +56,11 @@ export const Footer = () => {
                                 {/* Call to action */}
                                 <motion.button
                                     className="group inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
-                                    whileHover={{ scale: 1.05, y: -2 }}
+                                    whileHover={{ scale: 1.05, y: 0 }}
                                     whileTap={{ scale: 0.95 }}
                                 >
                                     Start Writing Today
-                                    <ArrowUpRight className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300" />
+                                    <ArrowUpRight className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300 delay-300" />
                                 </motion.button>
                             </div>
 
@@ -147,7 +147,6 @@ export const Footer = () => {
                                         <motion.a
                                             href={link.href}
                                             className="text-gray-600 hover:text-blue-600 transition-all duration-300 inline-flex items-center group font-medium"
-                                            whileHover={{ x: 8 }}
                                         >
                                             <span className="w-0 h-0.5 bg-blue-600 group-hover:w-4 transition-all duration-300 mr-0 group-hover:mr-3 rounded-full"></span>
                                             {link.name}
@@ -249,10 +248,10 @@ export const Footer = () => {
                                             {social.icon}
 
                                             {/* Tooltip */}
-                                            <div className="absolute -top-12 left-1/2 transform -translate-x-1/2 px-3 py-1 bg-gray-900 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                                            {/* <div className="absolute -top-12 left-1/2 transform -translate-x-1/2 px-3 py-1 bg-gray-900 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
                                                 {social.name}
                                                 <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
-                                            </div>
+                                            </div> */}
                                         </motion.a>
                                     ))}
                                 </div>

@@ -1,16 +1,12 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import {
-    ChevronLeft,
-    ChevronRight,
-    Clock,
-    ArrowUpRight,
-} from "lucide-react";
+import { ChevronLeft, ChevronRight, Clock, ArrowUpRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { useMediaQuery } from "../hooks/use-media-querry";
-import { useFeaturedBlogs } from "../hooks";
+import { useMediaQuery } from "../../hooks/use-media-querry";
+import { useFeaturedBlogs } from "../../hooks";
+import { FeaturedSliderSkeleton } from "./FeaturedSliderSkeleton";
 
 export const FeaturedSlider = () => {
     const { loading, blogs: featuredArticles } = useFeaturedBlogs();
@@ -48,17 +44,7 @@ export const FeaturedSlider = () => {
 
     // Loading state
     if (loading) {
-        return (
-            <div className="relative w-full">
-                <div className="text-center mb-8 sm:mb-16">
-                    <div className="animate-pulse">
-                        <div className="h-8 bg-gray-300 rounded w-1/3 mx-auto mb-4"></div>
-                        <div className="h-4 bg-gray-200 rounded w-1/2 mx-auto"></div>
-                    </div>
-                </div>
-                <div className="relative w-full h-[500px] md:h-[600px] lg:h-[650px] bg-gray-200 animate-pulse rounded-xl"></div>
-            </div>
-        );
+        return <FeaturedSliderSkeleton />;
     }
 
     // No featured articles
@@ -131,7 +117,10 @@ export const FeaturedSlider = () => {
                         <div className="w-[100px] sm:w-[150px] md:w-[200px] h-1 bg-gradient-to-r from-blue-400 to-blue-300 mx-auto mt-1 rounded-full opacity-60"></div>
                     </div>
                     <p className="text-sm sm:text-base md:text-lg text-gray-600 mt-4 sm:mt-6 max-w-2xl mx-auto px-2 md:px-4">
-                        Discover our handpicked collection of exceptional articles and explore our curated collection of articles, insights, and stories from talented writers around the world.
+                        Discover our handpicked collection of exceptional
+                        articles and explore our curated collection of articles,
+                        insights, and stories from talented writers around the
+                        world.
                     </p>
                 </motion.div>
             </div>
@@ -209,11 +198,13 @@ export const FeaturedSlider = () => {
                                         <div className="flex items-center justify-between">
                                             <div>
                                                 <p className="text-xs font-semibold text-gray-900">
-                                                    {currentArticle.author.name ||
-                                                        "Anonymous"}
+                                                    {currentArticle.author
+                                                        .name || "Anonymous"}
                                                 </p>
                                                 <p className="text-xs text-gray-600">
-                                                    {formatDate(currentArticle.createdAt)}
+                                                    {formatDate(
+                                                        currentArticle.createdAt,
+                                                    )}
                                                 </p>
                                             </div>
                                             <div className="flex items-center gap-1 text-blue-600">
@@ -244,7 +235,10 @@ export const FeaturedSlider = () => {
                                     {/* Article Number */}
                                     <div className="flex items-center gap-2 sm:gap-4 mb-3 sm:mb-6">
                                         <span className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-blue-100 leading-none">
-                                            {String(currentSlide + 1).padStart(2, "0")}
+                                            {String(currentSlide + 1).padStart(
+                                                2,
+                                                "0",
+                                            )}
                                         </span>
                                         <div className="flex flex-col">
                                             <span className="text-xs sm:text-sm font-medium text-blue-600 uppercase tracking-wide">
@@ -284,8 +278,8 @@ export const FeaturedSlider = () => {
                                         <div className="flex items-center gap-4">
                                             <div>
                                                 <p className="text-sm font-semibold text-gray-900">
-                                                    {currentArticle.author.name ||
-                                                        "Anonymous"}
+                                                    {currentArticle.author
+                                                        .name || "Anonymous"}
                                                 </p>
                                                 <div className="flex items-center gap-2 text-xs text-gray-600">
                                                     <span>
@@ -312,7 +306,9 @@ export const FeaturedSlider = () => {
                                         <button
                                             className="group relative px-4 sm:px-6 md:px-8 py-2 sm:py-3 md:py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-sm sm:text-base font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden"
                                             onClick={() =>
-                                                navigate(`/blog/${currentArticle.id}`)
+                                                navigate(
+                                                    `/blog/${currentArticle.id}`,
+                                                )
                                             }
                                         >
                                             <span className="relative z-10 flex items-center gap-2">
